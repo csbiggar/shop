@@ -34,12 +34,8 @@ internal class BiscuitsApiTest {
         // Then
         //TODO Grr something not compiling here!
 //        assertThrows<Exception> { biscuitsApi.getBiscuit("123") }
-
     }
-
-
 }
-
 
 object FakeBiscuitClient : BiscuitClient {
     override fun getBiscuit(id: String): Response {

@@ -15,7 +15,7 @@ interface BiscuitRepository {
 }
 
 class DefaultBiscuitRepository(
-    private val client: BiscuitClient = LocalBiscuitClient
+    private val client: BiscuitClient
 ) : BiscuitRepository {
 
     private val biscuitLens = Body.auto<Biscuit>().toLens()
@@ -35,9 +35,7 @@ interface BiscuitClient {
     fun getBiscuit(id: String): Response
 }
 
-object LocalBiscuitClient : BiscuitClient {
-    private const val baseUrl: String = "http://localhost:9000"
-
+class DefaultBiscuitClient(private val baseUrl: String) : BiscuitClient {
     private val client = ApacheClient()
     override fun getBiscuit(id: String): Response {
         val request = Request(Method.GET, "$baseUrl/biscuits/$id")

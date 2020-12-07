@@ -1,9 +1,8 @@
 import clients.BiscuitRepository
 import clients.DefaultBiscuitRepository
-import clients.LocalBiscuitClient
+import clients.DefaultBiscuitClient
 import inventory.Inventory
 import org.http4k.core.Method
-import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.bind
@@ -13,7 +12,7 @@ import org.http4k.server.asServer
 
 fun main() {
     val port = 7000
-    createApp(DefaultBiscuitRepository(LocalBiscuitClient))
+    createApp(DefaultBiscuitRepository(DefaultBiscuitClient("http://localhost:9000")))
         .asServer(Netty(port))
         .start()
 

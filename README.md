@@ -1,6 +1,7 @@
 ### PACT  - Example Provider application
 
-Simple application serving up a "get clients by id" api, to demonstrate the Provider side of pact contract testing
+Simple shop inventory api which consumes a "biscuits" apo, to demonstrate the Consumer
+side of pact contract testing
 
 
 ### Prerequisites
@@ -11,4 +12,13 @@ Simple application serving up a "get clients by id" api, to demonstrate the Prov
 
     ./gradlew build run
 
-then visit http:localhost:9000/clients/1
+then visit http://localhost:7000/inventory/biscuits
+
+Requires the "biscuits" service to be running, expected on localhost/9000
+
+
+### Publish pacts
+
+    ./gradlew clean build pactPublish
+
+Expects to find a pact broker at http://localhost:2020
