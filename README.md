@@ -1,4 +1,4 @@
-### PACT  - Example Provider application
+### PACT  - Example Consumer application
 
 Simple shop inventory api which consumes a "biscuits" apo, to demonstrate the Consumer
 side of pact contract testing
