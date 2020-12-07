@@ -5,7 +5,6 @@ import au.com.dius.pact.consumer.MockServer
 import au.com.dius.pact.consumer.PactTestExecutionContext
 import au.com.dius.pact.consumer.PactTestRun
 import au.com.dius.pact.consumer.PactVerificationResult
-import au.com.dius.pact.consumer.dsl.PactDslRequestWithPath
 import au.com.dius.pact.consumer.model.MockProviderConfig
 import au.com.dius.pact.consumer.runConsumerTest
 import au.com.dius.pact.core.model.RequestResponsePact
@@ -24,22 +23,34 @@ class BiscuitsContractTest {
 
         val biscuitId = "1"
 
-        val getBiscuit = biscuitApiCall(
-            testDescription = "Details return for existing biscuit",
-            biscuitId = biscuitId,
-            stateRequired = "Biscuit exists"
-        )
-        val primedResponse = getBiscuit
+        val primedResponse = ConsumerPactBuilder
+            .consumer("shop")
+            .hasPactWith("biscuits")
+
+            .given("Biscuit exists")
+            .uponReceiving("Details return for existing biscuit")
+
+            .path("/biscuits/$biscuitId")
+            .method("GET")
             .willRespondWith()
+
             .status(200)
             .headers(mapOf("Content-Type" to "application/json"))
-            .body(biscuitResponse)
+            .body(
+                //TODO Pattern matching response
+                """
+                    { "name" : "Club" }
+                """
+            )
             .toPact()
 
         val deferredResult = primedResponse.runTest {
             val biscuit = biscuitRepository.getBiscuit(biscuitId)
             assertThat(biscuit?.name).isNotNull()
         }
+
+        // This is super important! If you don't include this, your test will
+        // always pass
         assertThat(deferredResult).isEqualTo(PactVerificationResult.Ok())
     }
 
@@ -47,14 +58,17 @@ class BiscuitsContractTest {
     fun `no biscuit details found`() {
         val biscuitId = "DUMMY"
 
-        val getBiscuit = biscuitApiCall(
-            testDescription = "Null returned when biscuit is not found",
-            biscuitId = biscuitId,
-            stateRequired = "Biscuit does not exist"
-        )
+        val primedNotFoundResponse = ConsumerPactBuilder
+            .consumer("shop")
+            .hasPactWith("biscuits")
 
-        val primedNotFoundResponse = getBiscuit
+            .given("Biscuit does not exist")
+            .uponReceiving("Null returned when biscuit is not found")
+
+            .path("/biscuits/$biscuitId")
+            .method("GET")
             .willRespondWith()
+
             .status(404)
             .headers(mapOf("Content-Type" to "application/json"))
             .toPact()
@@ -63,27 +77,12 @@ class BiscuitsContractTest {
             val biscuit = biscuitRepository.getBiscuit(biscuitId)
             assertThat(biscuit).isNull()
         }
+
         assertThat(deferredResult).isEqualTo(PactVerificationResult.Ok())
     }
 
-    private fun biscuitApiCall(
-        testDescription: String,
-        biscuitId: String,
-        stateRequired: String
-    ): PactDslRequestWithPath = ConsumerPactBuilder
-        .consumer("shop")
-        .hasPactWith("biscuits")
-        .given(stateRequired)
-        .uponReceiving(testDescription)
-        .path("/biscuits/$biscuitId")
-        .method("GET")
 }
 
-
-//TODO Pattern matching response
-private const val biscuitResponse = """
-    { "name" : "Club" }
-"""
 
 private fun RequestResponsePact.runTest(testAndAssertions: () -> Unit): PactVerificationResult {
     val config = MockProviderConfig.httpConfig(port = PACT_PORT)
