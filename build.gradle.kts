@@ -21,7 +21,7 @@ val junitJupiterVersion = "5.3.1"
 val junitJupiterEngineVersion = "5.5.1"
 val assertJVersion = "3.13.2"
 val skyscreamerVersion = "1.5.0"
-val pactVersion = "4.1.0"
+val pactVersion = "4.1.16"
 
 dependencies {
     implementation(kotlin("stdlib"))
