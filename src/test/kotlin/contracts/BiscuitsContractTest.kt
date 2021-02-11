@@ -31,7 +31,7 @@ class BiscuitsContractTest {
             .hasPactWith("biscuits")
 
             .given("Biscuit exists")
-            .uponReceiving("Details return for existing biscuit")
+            .uponReceiving("Request for existing biscuit")
 
             .path("/biscuits/$biscuitId")
             .method("GET")
@@ -65,7 +65,7 @@ class BiscuitsContractTest {
             .hasPactWith("biscuits")
 
             .given("Biscuit does not exist")
-            .uponReceiving("Null returned when biscuit is not found")
+            .uponReceiving("Request for missing biscuit")
 
             .path("/biscuits/$biscuitId")
             .method("GET")
@@ -88,8 +88,7 @@ class BiscuitsContractTest {
         val biscuitsService = ConsumerPactBuilder
             .consumer("shop")
             .hasPactWith("biscuits")
-            .given("Biscuits exist")
-            .uponReceiving("Details for all biscuits")
+            .uponReceiving("Request for all biscuits")
             .path("/biscuits")
             .method("GET")
 
