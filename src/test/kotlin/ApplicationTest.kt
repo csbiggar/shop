@@ -20,7 +20,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `should return canned response`() {
+    fun `should return biscuit inventory`() {
         // When
         val result = createApp(MockBiscuitRepository)(Request(Method.GET, "/inventory/biscuits"))
 
@@ -48,6 +48,33 @@ class ApplicationTest {
 
     }
 
+    @Test
+    fun `should return biscuit replenishment list`() {
+        // When
+        val result = createApp(MockBiscuitRepository)(Request(Method.GET, "/replenishment/biscuits"))
+
+        assertThat(result.status).isEqualTo(Status.OK)
+        assertThat(result.header("Content-Type")).isEqualTo("application/json; charset=utf-8")
+
+        JSONAssert.assertEquals(
+            """ 
+            [
+              {
+                "name": "My Biscuit",
+                "toOrder": 10
+              },
+              {
+                "name": "Another biscuit",
+                "toOrder": 10
+              }
+            ]
+            """.trimIndent(),
+            result.body.toString(),
+            true
+        )
+
+    }
+
 }
 
 object MockBiscuitRepository : BiscuitRepository {
@@ -56,6 +83,13 @@ object MockBiscuitRepository : BiscuitRepository {
             "1" -> Biscuit("My Biscuit")
             else -> null
         }
+    }
+
+    override fun getAllBiscuits(): List<Biscuit> {
+        return listOf(
+            Biscuit("My Biscuit"),
+            Biscuit("Another biscuit")
+        )
     }
 
 }

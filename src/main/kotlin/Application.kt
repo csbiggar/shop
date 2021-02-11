@@ -2,6 +2,7 @@ import clients.BiscuitRepository
 import clients.DefaultBiscuitRepository
 import clients.DefaultBiscuitClient
 import inventory.Inventory
+import inventory.Replenishment
 import org.http4k.core.Method
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
@@ -22,5 +23,6 @@ fun main() {
 fun createApp(biscuitRepository: BiscuitRepository) = routes(
     "/" bind Method.GET to { Response(OK).body("Pact example consumer application (shop consuming biscuits api)") },
     "inventory/biscuits" bind Method.GET to { Inventory(biscuitRepository).getBiscuitInventory() },
+    "replenishment/biscuits" bind Method.GET to { Replenishment(biscuitRepository).getBiscuitReplenishment() }
 )
 

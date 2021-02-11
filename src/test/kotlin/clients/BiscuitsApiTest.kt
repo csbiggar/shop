@@ -45,4 +45,8 @@ object FakeBiscuitClient : BiscuitClient {
             else -> Response(NOT_FOUND)
         }
     }
+
+    override fun getAllBiscuits(): Response {
+        TODO("Not yet implemented")
+    }
 }
